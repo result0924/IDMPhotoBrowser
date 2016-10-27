@@ -24,6 +24,7 @@
 - (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser willDismissAtPageIndex:(NSUInteger)index;
 - (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser didDismissActionSheetWithButtonIndex:(NSUInteger)buttonIndex photoIndex:(NSUInteger)photoIndex;
 - (IDMCaptionView *)photoBrowser:(IDMPhotoBrowser *)photoBrowser captionViewForPhotoAtIndex:(NSUInteger)index;
+- (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser didTapDeleteButtonAtIndex:(NSUInteger)index;
 @end
 
 // IDMPhotoBrowser
@@ -37,9 +38,11 @@
 @property (nonatomic) BOOL displayCounterLabel;
 @property (nonatomic) BOOL displayArrowButton;
 @property (nonatomic) BOOL displayActionButton;
+@property (nonatomic) BOOL displayDeleteButton;
 @property (nonatomic, strong) NSArray *actionButtonTitles;
 @property (nonatomic, weak) UIImage *leftArrowImage, *leftArrowSelectedImage;
 @property (nonatomic, weak) UIImage *rightArrowImage, *rightArrowSelectedImage;
+@property (nonatomic, weak) UIImage *deleteButtonImage;
 
 // View customization
 @property (nonatomic) BOOL displayDoneButton;
@@ -78,6 +81,7 @@
 
 // Reloads the photo browser and refetches data
 - (void)reloadData;
+- (void)reloadDataWithPhotos:(NSArray *)photosArray;
 
 // Set page that photo browser starts on
 - (void)setInitialPageIndex:(NSUInteger)index;

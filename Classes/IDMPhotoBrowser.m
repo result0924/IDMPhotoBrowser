@@ -38,7 +38,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
 	// Toolbar
 	UIToolbar *_toolbar;
-	UIBarButtonItem *_previousButton, *_nextButton, *_actionButton;
+	UIBarButtonItem *_previousButton, *_nextButton, *_actionButton, *_deleteButton;
     UIBarButtonItem *_counterButton;
     UILabel *_counterLabel;
 
@@ -130,7 +130,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 @implementation IDMPhotoBrowser
 
 // Properties
-@synthesize displayDoneButton = _displayDoneButton, displayToolbar = _displayToolbar, displayActionButton = _displayActionButton, displayCounterLabel = _displayCounterLabel, useWhiteBackgroundColor = _useWhiteBackgroundColor, doneButtonImage = _doneButtonImage;
+@synthesize displayDoneButton = _displayDoneButton, displayToolbar = _displayToolbar, displayActionButton = _displayActionButton, displayCounterLabel = _displayCounterLabel, useWhiteBackgroundColor = _useWhiteBackgroundColor, doneButtonImage = _doneButtonImage, displayDeleteButton = _displayDeleteButton;
 @synthesize leftArrowImage = _leftArrowImage, rightArrowImage = _rightArrowImage, leftArrowSelectedImage = _leftArrowSelectedImage, rightArrowSelectedImage = _rightArrowSelectedImage;
 @synthesize displayArrowButton = _displayArrowButton, actionButtonTitles = _actionButtonTitles;
 @synthesize arrowButtonsChangePhotosAnimated = _arrowButtonsChangePhotosAnimated;
@@ -140,6 +140,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 @synthesize actionsSheet = _actionsSheet, activityViewController = _activityViewController;
 @synthesize trackTintColor = _trackTintColor, progressTintColor = _progressTintColor;
 @synthesize delegate = _delegate;
+@synthesize deleteButtonImage = _deleteButtonImage;
 
 #pragma mark - NSObject
 
@@ -166,13 +167,14 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         _displayActionButton = YES;
         _displayArrowButton = YES;
         _displayCounterLabel = NO;
+        _displayDeleteButton = NO;
 
         _forceHideStatusBar = NO;
         _usePopAnimation = NO;
 		_disableVerticalSwipe = NO;
 
         _useWhiteBackgroundColor = NO;
-        _leftArrowImage = _rightArrowImage = _leftArrowSelectedImage = _rightArrowSelectedImage = nil;
+        _leftArrowImage = _rightArrowImage = _leftArrowSelectedImage = _rightArrowSelectedImage, _deleteButtonImage = nil;
 
         _arrowButtonsChangePhotosAnimated = YES;
 
@@ -666,6 +668,11 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
                                                                   target:self
                                                                   action:@selector(actionButtonPressed:)];
 
+    // Delete Button
+    _deleteButton = [[UIBarButtonItem alloc] initWithCustomView:[self customToolbarButtonImage:_deleteButtonImage
+                                                                                 imageSelected:_deleteButtonImage
+                                                                                        action:@selector(deleteButtonPressed:)]];
+
     // Gesture
     _panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panGestureRecognized:)];
     [_panGesture setMinimumNumberOfTouches:1];
@@ -839,6 +846,17 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     if(_displayActionButton)
         [items addObject:_actionButton];
 
+    if (_displayDeleteButton) {
+        if (!_displayActionButton && !_displayCounterLabel && !_displayArrowButton) {
+            [items removeAllObjects];
+            [items addObject:flexSpace];
+        }
+        [items addObject:_deleteButton];
+        if (!_displayActionButton && !_displayCounterLabel && !_displayArrowButton) {
+            [items addObject:flexSpace];
+        }
+    }
+
     [_toolbar setItems:items];
 	[self updateToolbar];
 
@@ -852,6 +870,23 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 }
 
 #pragma mark - Data
+
+- (void)reloadDataWithPhotos:(NSArray *)photosArray {
+    // Setup paging scrolling view
+    [_pagingScrollView removeFromSuperview];
+    _pagingScrollView = nil;
+    CGRect pagingScrollViewFrame = [self frameForPagingScrollView];
+    _pagingScrollView = [[UIScrollView alloc] initWithFrame:pagingScrollViewFrame];
+    _pagingScrollView.pagingEnabled = YES;
+    _pagingScrollView.delegate = self;
+    _pagingScrollView.showsHorizontalScrollIndicator = NO;
+    _pagingScrollView.showsVerticalScrollIndicator = NO;
+    _pagingScrollView.backgroundColor = [UIColor clearColor];
+    _pagingScrollView.contentSize = [self contentSizeForPagingScrollView];
+    [self.view addSubview:_pagingScrollView];
+    _photos = photosArray;
+    [self reloadData];
+}
 
 - (void)reloadData {
     // Get data
@@ -1343,6 +1378,12 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
         // Keep controls hidden
         [self setControlsHidden:NO animated:YES permanent:YES];
+    }
+}
+
+- (void)deleteButtonPressed:(id)sender {
+    if ([self.delegate respondsToSelector:@selector(photoBrowser:didTapDeleteButtonAtIndex:)]) {
+        [self.delegate photoBrowser:self didTapDeleteButtonAtIndex:_currentPageIndex];
     }
 }
 
