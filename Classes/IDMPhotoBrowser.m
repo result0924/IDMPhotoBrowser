@@ -611,13 +611,10 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     [_doneButton addTarget:self action:@selector(doneButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
 
     if(!_doneButtonImage) {
-        [_doneButton setTitleColor:[UIColor colorWithWhite:0.9 alpha:0.9] forState:UIControlStateNormal|UIControlStateHighlighted];
+        [_doneButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal|UIControlStateHighlighted];
         [_doneButton setTitle:IDMPhotoBrowserLocalizedStrings(@"Done") forState:UIControlStateNormal];
-        [_doneButton.titleLabel setFont:[UIFont boldSystemFontOfSize:11.0f]];
-        [_doneButton setBackgroundColor:[UIColor colorWithWhite:0.1 alpha:0.5]];
-        _doneButton.layer.cornerRadius = 3.0f;
-        _doneButton.layer.borderColor = [UIColor colorWithWhite:0.9 alpha:0.9].CGColor;
-        _doneButton.layer.borderWidth = 1.0f;
+        [_doneButton.titleLabel setFont:[UIFont systemFontOfSize:17.0f]];
+        [_doneButton setContentHorizontalAlignment:UIControlContentHorizontalAlignmentRight];
     }
     else {
         [_doneButton setImage:_doneButtonImage forState:UIControlStateNormal];
@@ -1146,7 +1143,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
     // if ([self isLandscape:orientation]) screenWidth = screenBound.size.height;
 
-    return CGRectMake(screenWidth - 75, 30, 55, 26);
+    return CGRectMake(screenWidth - 65, 30, 55, 24);
 }
 
 - (CGRect)frameForCaptionView:(IDMCaptionView *)captionView atIndex:(NSUInteger)index {
