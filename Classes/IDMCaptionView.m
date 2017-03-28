@@ -63,7 +63,7 @@ static const CGFloat labelPadding = 10;
     
     CGSize textSize = rect.size;
     
-    return CGSizeMake(size.width, textSize.height + labelPadding * 2);
+    return CGSizeMake(size.width, MAX(textSize.height, size.height));
 }
 
 - (void)setupCaption {
