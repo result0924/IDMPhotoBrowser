@@ -34,9 +34,6 @@ static const CGFloat labelPadding = 10;
     if (self) {
         _photo = photo;
         self.opaque = NO;
-        
-        [self setBackground];
-        
         [self setupCaption];
     }
     
@@ -88,16 +85,6 @@ static const CGFloat labelPadding = 10;
     }
     
     [self addSubview:_label];
-}
-
-- (void)setBackground {
-    UIView *fadeView = [[UIView alloc] initWithFrame:CGRectMake(0, -100, 10000, 130+100)]; // Static width, autoresizingMask is not working
-    CAGradientLayer *gradient = [CAGradientLayer layer];
-    gradient.frame = fadeView.bounds;
-    gradient.colors = [NSArray arrayWithObjects:(id)[[UIColor colorWithWhite:0 alpha:0.0] CGColor], (id)[[UIColor colorWithWhite:0 alpha:0.8] CGColor], nil];
-    [fadeView.layer insertSublayer:gradient atIndex:0];
-    fadeView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight; //UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
-    [self addSubview:fadeView];
 }
 
 @end
