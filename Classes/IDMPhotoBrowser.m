@@ -622,7 +622,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     }
     else {
         [_doneButton setImage:_doneButtonImage forState:UIControlStateNormal];
-        _doneButton.contentMode = UIViewContentModeScaleAspectFit;
+        _doneButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
     }
 
     // Report Button
@@ -1165,7 +1165,11 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
     // if ([self isLandscape:orientation]) screenWidth = screenBound.size.height;
 
-    return CGRectMake(screenWidth - 65, 30, 55, 24);
+    if(_doneButtonImage) {
+        return CGRectMake(screenWidth - 33, 33, 18, 18);
+    } else {
+        return CGRectMake(screenWidth - 65, 30, 55, 24);
+    }
 }
 
 - (CGRect)frameForReportButton {
