@@ -115,7 +115,14 @@
     browser.displayCounterLabel = YES;
     browser.usePopAnimation = YES;
     browser.scaleImage = buttonSender.currentImage;
-    if(buttonSender.tag == 102) browser.useWhiteBackgroundColor = YES;
+
+    if(buttonSender.tag == 102) {
+        browser.useWhiteBackgroundColor = YES;
+    } else {
+        browser.displayToolbar = NO;
+        browser.displayReportButton = YES;
+        browser.reportButtonTitle = @"Report!";
+    }
     
     // Show
     [self presentViewController:browser animated:YES completion:nil];
@@ -281,6 +288,11 @@
     
     NSString *title = [NSString stringWithFormat:@"Option %zu", buttonIndex+1];
     [UIAlertView showAlertViewWithTitle:title];
+}
+
+- (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser didTapReportButtonAtIndex:(NSUInteger)index {
+    id <IDMPhoto> photo = [photoBrowser photoAtIndex:index];
+    NSLog(@"Did tap report button with photo index: %zu, photo caption: %@", index, photo.caption);
 }
 
 @end
