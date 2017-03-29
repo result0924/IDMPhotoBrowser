@@ -25,6 +25,8 @@
 - (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser didDismissActionSheetWithButtonIndex:(NSUInteger)buttonIndex photoIndex:(NSUInteger)photoIndex;
 - (IDMCaptionView *)photoBrowser:(IDMPhotoBrowser *)photoBrowser captionViewForPhotoAtIndex:(NSUInteger)index;
 - (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser didTapDeleteButtonAtIndex:(NSUInteger)index;
+- (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser didTapReportButtonAtIndex:(NSUInteger)index;
+
 @end
 
 // IDMPhotoBrowser
@@ -43,6 +45,12 @@
 @property (nonatomic, weak) UIImage *leftArrowImage, *leftArrowSelectedImage;
 @property (nonatomic, weak) UIImage *rightArrowImage, *rightArrowSelectedImage;
 @property (nonatomic, weak) UIImage *deleteButtonImage;
+
+// Report button customization
+// Should set displayReportButton to YES & displayToolbar to NO to display report button
+@property (nonatomic) BOOL displayReportButton;
+@property (nonatomic, copy) NSString *reportButtonTitle;
+@property (nonatomic, strong) UIColor *reportButtonTextColor;
 
 // View customization
 @property (nonatomic) BOOL displayDoneButton;

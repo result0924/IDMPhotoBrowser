@@ -35,6 +35,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
     // Buttons
     UIButton *_doneButton;
+    UIButton *_reportButton;
 
 	// Toolbar
 	UIToolbar *_toolbar;
@@ -130,7 +131,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 @implementation IDMPhotoBrowser
 
 // Properties
-@synthesize displayDoneButton = _displayDoneButton, displayToolbar = _displayToolbar, displayActionButton = _displayActionButton, displayCounterLabel = _displayCounterLabel, useWhiteBackgroundColor = _useWhiteBackgroundColor, doneButtonImage = _doneButtonImage, displayDeleteButton = _displayDeleteButton;
+@synthesize displayDoneButton = _displayDoneButton, displayReportButton = _displayReportButton, displayToolbar = _displayToolbar, displayActionButton = _displayActionButton, displayCounterLabel = _displayCounterLabel, useWhiteBackgroundColor = _useWhiteBackgroundColor, doneButtonImage = _doneButtonImage, reportButtonTitle = _reportButtonTitle, displayDeleteButton = _displayDeleteButton;
 @synthesize leftArrowImage = _leftArrowImage, rightArrowImage = _rightArrowImage, leftArrowSelectedImage = _leftArrowSelectedImage, rightArrowSelectedImage = _rightArrowSelectedImage;
 @synthesize displayArrowButton = _displayArrowButton, actionButtonTitles = _actionButtonTitles;
 @synthesize arrowButtonsChangePhotosAnimated = _arrowButtonsChangePhotosAnimated;
@@ -138,7 +139,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 @synthesize usePopAnimation = _usePopAnimation;
 @synthesize disableVerticalSwipe = _disableVerticalSwipe;
 @synthesize actionsSheet = _actionsSheet, activityViewController = _activityViewController;
-@synthesize trackTintColor = _trackTintColor, progressTintColor = _progressTintColor;
+@synthesize trackTintColor = _trackTintColor, progressTintColor = _progressTintColor, reportButtonTextColor = _reportButtonTextColor;
 @synthesize delegate = _delegate;
 @synthesize deleteButtonImage = _deleteButtonImage;
 
@@ -161,7 +162,10 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         _autoHideInterface = YES;
 
         _displayDoneButton = YES;
+        _displayReportButton = NO;
         _doneButtonImage = nil;
+        _reportButtonTitle = nil;
+        _reportButtonTextColor = nil;
 
         _displayToolbar = YES;
         _displayActionButton = YES;
@@ -618,7 +622,19 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     }
     else {
         [_doneButton setImage:_doneButtonImage forState:UIControlStateNormal];
-        _doneButton.contentMode = UIViewContentModeScaleAspectFit;
+        _doneButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
+    }
+
+    // Report Button
+    if (_reportButtonTitle) {
+        _reportButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [_reportButton setFrame:[self frameForReportButton]];
+        [_reportButton setTitle:_reportButtonTitle forState:UIControlStateNormal];
+        [_reportButton setTitleColor:_reportButtonTextColor ? : [UIColor whiteColor] forState:UIControlStateNormal];
+        [_reportButton.titleLabel setFont:[UIFont systemFontOfSize:17 weight:UIFontWeightMedium]];
+        _reportButton.layer.borderWidth = 0.5;
+        _reportButton.layer.borderColor = [UIColor colorWithWhite:159.0f / 225.0f alpha:1].CGColor;
+        [_reportButton addTarget:self action:@selector(reportButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     }
 
     UIImage *leftButtonImage = (_leftArrowImage == nil) ?
@@ -714,6 +730,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     _recycledPages = nil;
     _toolbar = nil;
     _doneButton = nil;
+    _reportButton = nil;
     _previousButton = nil;
     _nextButton = nil;
 
@@ -814,6 +831,11 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     // Close button
     if(_displayDoneButton && !self.navigationController.navigationBar)
         [self.view addSubview:_doneButton];
+
+    // Report button
+    if (_displayReportButton) {
+        [self.view addSubview:_reportButton];
+    }
 
     // Toolbar items & navigation
     UIBarButtonItem *fixedLeftSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace
@@ -1143,7 +1165,18 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
     // if ([self isLandscape:orientation]) screenWidth = screenBound.size.height;
 
-    return CGRectMake(screenWidth - 65, 30, 55, 24);
+    if(_doneButtonImage) {
+        return CGRectMake(screenWidth - 33, 33, 18, 18);
+    } else {
+        return CGRectMake(screenWidth - 65, 30, 55, 24);
+    }
+}
+
+- (CGRect)frameForReportButton {
+    CGFloat height = 44;
+    CGFloat borderWidth = 0.5;
+
+    return CGRectMake(-borderWidth, self.view.bounds.size.height - height, self.view.bounds.size.width + borderWidth * 2, height + borderWidth);
 }
 
 - (CGRect)frameForCaptionView:(IDMCaptionView *)captionView atIndex:(NSUInteger)index {
@@ -1247,6 +1280,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         [self.navigationController.navigationBar setAlpha:alpha];
         [_toolbar setAlpha:alpha];
         [_doneButton setAlpha:alpha];
+        [_reportButton setAlpha:alpha];
         for (UIView *v in captionViews) v.alpha = alpha;
     } completion:^(BOOL finished) {}];
 
@@ -1381,6 +1415,12 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 - (void)deleteButtonPressed:(id)sender {
     if ([self.delegate respondsToSelector:@selector(photoBrowser:didTapDeleteButtonAtIndex:)]) {
         [self.delegate photoBrowser:self didTapDeleteButtonAtIndex:_currentPageIndex];
+    }
+}
+
+- (void)reportButtonPressed:(id)sender {
+    if ([self.delegate respondsToSelector:@selector(photoBrowser:didTapReportButtonAtIndex:)]) {
+        [self.delegate photoBrowser:self didTapReportButtonAtIndex:_currentPageIndex];
     }
 }
 
