@@ -17,6 +17,12 @@
 NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBundle bundleForClass: [IDMPhotoBrowser class]] pathForResource:@"IDMPBLocalizations" ofType:@"bundle"]], nil)
 #endif
 
+@implementation reportObject
+@synthesize title;
+@synthesize titleColor;
+
+@end
+
 // Private
 @interface IDMPhotoBrowser () {
 	// Data
@@ -142,6 +148,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 @synthesize trackTintColor = _trackTintColor, progressTintColor = _progressTintColor, reportButtonTextColor = _reportButtonTextColor;
 @synthesize delegate = _delegate;
 @synthesize deleteButtonImage = _deleteButtonImage;
+@synthesize reportTitleAry = _reportTitleAry;
 
 #pragma mark - NSObject
 
@@ -890,6 +897,11 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
 #pragma mark - Data
 
+- (void)reloadReportBtnTitle:(NSArray *)reportTitleAry {
+    _reportTitleAry = reportTitleAry;
+    [self reloadData];
+}
+
 - (void)reloadDataWithPhotos:(NSArray *)photosArray {
     // Setup paging scrolling view
     [_pagingScrollView removeFromSuperview];
@@ -1109,6 +1121,13 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     }
     if ([_delegate respondsToSelector:@selector(photoBrowser:didShowPhotoAtIndex:)]) {
         [_delegate photoBrowser:self didShowPhotoAtIndex:index];
+    }
+
+    if (_reportTitleAry.count > index + 1 || index + 1 == _reportTitleAry.count) {
+        reportObject *report = [_reportTitleAry objectAtIndex:index];
+
+        [_reportButton setTitle:report.title ? : @"" forState:UIControlStateNormal];
+        [_reportButton setTitleColor:report.titleColor ? : [UIColor whiteColor] forState:UIControlStateNormal];
     }
 }
 

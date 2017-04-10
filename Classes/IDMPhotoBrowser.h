@@ -29,6 +29,12 @@
 
 @end
 
+@interface reportObject : NSObject
+@property (nonatomic, strong) NSString *title;
+@property (nonatomic, strong) UIColor *titleColor;
+
+@end
+
 // IDMPhotoBrowser
 @interface IDMPhotoBrowser : UIViewController <UIScrollViewDelegate, UIActionSheetDelegate>
 
@@ -51,6 +57,7 @@
 @property (nonatomic) BOOL displayReportButton;
 @property (nonatomic, copy) NSString *reportButtonTitle;
 @property (nonatomic, strong) UIColor *reportButtonTextColor;
+@property (nonatomic, strong) NSArray<reportObject *> *reportTitleAry;
 
 // View customization
 @property (nonatomic) BOOL displayDoneButton;
@@ -90,6 +97,7 @@
 // Reloads the photo browser and refetches data
 - (void)reloadData;
 - (void)reloadDataWithPhotos:(NSArray *)photosArray;
+- (void)reloadReportBtnTitle:(NSArray<reportObject *> *)reportTitleAry;
 
 // Set page that photo browser starts on
 - (void)setInitialPageIndex:(NSUInteger)index;
