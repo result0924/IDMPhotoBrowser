@@ -16,6 +16,11 @@
 
 @end
 
+@interface Menu()
+@property (nonatomic, strong) NSMutableArray *reportTitleAry;
+
+@end
+
 @implementation Menu
 
 #pragma mark - Initialization
@@ -292,6 +297,26 @@
 
 - (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser didTapReportButtonAtIndex:(NSUInteger)index {
     id <IDMPhoto> photo = [photoBrowser photoAtIndex:index];
+
+    if (!self.reportTitleAry) {
+        self.reportTitleAry = [NSMutableArray new];
+        NSInteger totalPhoto = 4;
+
+        for (int i = 0; i < totalPhoto; i++) {
+            ReportObject *report = [ReportObject new];
+            report.title = @"Report!";
+            report.titleColor = [UIColor whiteColor];
+            [self.reportTitleAry addObject:report];
+        }
+    }
+
+    ReportObject *hasReport = [ReportObject new];
+    hasReport.title = @"has report";
+    hasReport.titleColor = [UIColor colorWithWhite:255.0f / 255.0f alpha:0.4f];
+
+    [self.reportTitleAry replaceObjectAtIndex:index withObject:hasReport];
+
+    [photoBrowser reloadReportBtnTitle:self.reportTitleAry];
     NSLog(@"Did tap report button with photo index: %zu, photo caption: %@", index, photo.caption);
 }
 
