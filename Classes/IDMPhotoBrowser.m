@@ -17,7 +17,7 @@
 NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBundle bundleForClass: [IDMPhotoBrowser class]] pathForResource:@"IDMPBLocalizations" ofType:@"bundle"]], nil)
 #endif
 
-@implementation reportObject
+@implementation ReportObject
 @synthesize title;
 @synthesize titleColor;
 
@@ -1124,7 +1124,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     }
 
     if (_reportTitleAry.count > index + 1 || index + 1 == _reportTitleAry.count) {
-        reportObject *report = [_reportTitleAry objectAtIndex:index];
+        ReportObject *report = [_reportTitleAry objectAtIndex:index];
 
         [_reportButton setTitle:report.title ? : @"" forState:UIControlStateNormal];
         [_reportButton setTitleColor:report.titleColor ? : [UIColor whiteColor] forState:UIControlStateNormal];

@@ -29,7 +29,7 @@
 
 @end
 
-@interface reportObject : NSObject
+@interface ReportObject : NSObject
 @property (nonatomic, strong) NSString *title;
 @property (nonatomic, strong) UIColor *titleColor;
 
@@ -57,7 +57,7 @@
 @property (nonatomic) BOOL displayReportButton;
 @property (nonatomic, copy) NSString *reportButtonTitle;
 @property (nonatomic, strong) UIColor *reportButtonTextColor;
-@property (nonatomic, strong) NSArray<reportObject *> *reportTitleAry;
+@property (nonatomic, strong) NSArray<ReportObject *> *reportTitleAry;
 
 // View customization
 @property (nonatomic) BOOL displayDoneButton;
@@ -97,7 +97,7 @@
 // Reloads the photo browser and refetches data
 - (void)reloadData;
 - (void)reloadDataWithPhotos:(NSArray *)photosArray;
-- (void)reloadReportBtnTitle:(NSArray<reportObject *> *)reportTitleAry;
+- (void)reloadReportBtnTitle:(NSArray<ReportObject *> *)reportTitleAry;
 
 // Set page that photo browser starts on
 - (void)setInitialPageIndex:(NSUInteger)index;

@@ -303,14 +303,14 @@
         NSInteger totalPhoto = 4;
 
         for (int i = 0; i < totalPhoto; i++) {
-            reportObject *report = [reportObject new];
+            ReportObject *report = [ReportObject new];
             report.title = @"Report!";
             report.titleColor = [UIColor whiteColor];
             [self.reportTitleAry addObject:report];
         }
     }
 
-    reportObject *hasReport = [reportObject new];
+    ReportObject *hasReport = [ReportObject new];
     hasReport.title = @"has report";
     hasReport.titleColor = [UIColor colorWithWhite:255.0f / 255.0f alpha:0.4f];
 
