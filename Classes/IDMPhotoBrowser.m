@@ -1185,7 +1185,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     // if ([self isLandscape:orientation]) screenWidth = screenBound.size.height;
 
     if(_doneButtonImage) {
-        return CGRectMake(screenWidth - 33, 33, 18, 18);
+        return CGRectMake(screenWidth - 50, 26, 32, 32);
     } else {
         return CGRectMake(screenWidth - 65, 30, 55, 24);
     }
