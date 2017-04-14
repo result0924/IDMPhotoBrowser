@@ -628,6 +628,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         [_doneButton setContentHorizontalAlignment:UIControlContentHorizontalAlignmentRight];
     }
     else {
+        [_doneButton setImageEdgeInsets:UIEdgeInsetsMake(26.0f, 0.0f, 0.0f, 18.0f)];
         [_doneButton setImage:_doneButtonImage forState:UIControlStateNormal];
         _doneButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
     }
@@ -1185,7 +1186,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     // if ([self isLandscape:orientation]) screenWidth = screenBound.size.height;
 
     if(_doneButtonImage) {
-        return CGRectMake(screenWidth - 50, 26, 32, 32);
+        return CGRectMake(screenWidth - 50, 0, 50, 58);
     } else {
         return CGRectMake(screenWidth - 65, 30, 55, 24);
     }
