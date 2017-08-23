@@ -128,6 +128,29 @@
         browser.displayToolbar = NO;
         browser.displayReportButton = YES;
         browser.reportButtonTitle = @"Report!";
+        browser.displayMealView = YES;
+
+        MealObject *meal1 = [MealObject new];
+        meal1.beforeMeal = nil;
+        meal1.afterMeal = nil;
+        meal1.statusColor = nil;
+
+        MealObject *meal2 = [MealObject new];
+        meal2.beforeMeal = nil;
+        meal2.afterMeal = @(100);
+        meal2.statusColor = [UIColor colorWithRed:0.0f / 255.0f green:0.0f / 255.0f blue:0.0f / 255.0f alpha:0.3f];
+
+        MealObject *meal3 = [MealObject new];
+        meal3.beforeMeal = @(132);
+        meal3.afterMeal = @(144);
+        meal3.statusColor = [UIColor colorWithRed:111.0f / 255.0f green:197.0f / 255.0f blue:198.0f / 255.0f alpha:0.75f];
+
+        MealObject *meal4 = [MealObject new];
+        meal4.beforeMeal = @(101);
+        meal4.afterMeal = @(153);
+        meal4.statusColor = [UIColor colorWithRed:255.0f / 255.0f green:121.0f / 255.0f blue:21.0f / 255.0f alpha:0.75f];
+
+        browser.mealAry = @[meal1, meal2, meal3, meal4];
     }
     
     // Show
