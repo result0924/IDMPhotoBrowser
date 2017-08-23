@@ -35,6 +35,13 @@
 
 @end
 
+@interface MealObject : NSObject
+@property (nonatomic, strong) NSNumber *beforeMeal;
+@property (nonatomic, strong) NSNumber *afterMeal;
+@property (nonatomic, strong) UIColor *statusColor;
+
+@end
+
 // IDMPhotoBrowser
 @interface IDMPhotoBrowser : UIViewController <UIScrollViewDelegate, UIActionSheetDelegate>
 
@@ -72,6 +79,9 @@
 @property (nonatomic) BOOL forceHideStatusBar;
 @property (nonatomic) BOOL usePopAnimation;
 @property (nonatomic) BOOL disableVerticalSwipe;
+@property (nonatomic) BOOL displayMealView;
+@property (nonatomic, strong) NSArray<MealObject *> *mealAry;
+
 
 // Default value: true. Set to false to tell the photo viewer not to hide the interface when scrolling
 @property (nonatomic) BOOL autoHideInterface;
@@ -104,5 +114,7 @@
 
 // Get IDMPhoto at index
 - (id<IDMPhoto>)photoAtIndex:(NSUInteger)index;
+
+- (void)letMealViewHidden:(BOOL)isHidden;
 
 @end

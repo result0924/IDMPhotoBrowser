@@ -228,7 +228,7 @@
     // Center the image as it becomes smaller than the size of the screen
     CGSize boundsSize = self.bounds.size;
     CGRect frameToCenter = _photoImageView.frame;
-    
+
     // Horizontally
     if (frameToCenter.size.width < boundsSize.width) {
         frameToCenter.origin.x = floorf((boundsSize.width - frameToCenter.size.width) / 2.0);
@@ -246,6 +246,13 @@
 	// Center
 	if (!CGRectEqualToRect(_photoImageView.frame, frameToCenter))
 		_photoImageView.frame = frameToCenter;
+
+    if ((_photoImageView.frame.size.width < self.bounds.size.width || _photoImageView.frame.size.width == self.bounds.size.width) &&
+        (_photoImageView.frame.size.height < self.bounds.size.height || _photoImageView.frame.size.height == self.bounds.size.height)) {
+        [self.photoBrowser letMealViewHidden:NO];
+    } else {
+        [self.photoBrowser letMealViewHidden:YES];
+    }
 }
 
 #pragma mark - UIScrollViewDelegate
