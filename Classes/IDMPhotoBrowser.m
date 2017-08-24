@@ -716,32 +716,34 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     [_panGesture setMinimumNumberOfTouches:1];
     [_panGesture setMaximumNumberOfTouches:1];
 
-    // Custom Meal view
-    _mealView = [[UIView alloc] initWithFrame:CGRectMake(10.0f, 100.0f, 170.0f, 30.0f)];
-    _mealView.layer.cornerRadius = 15.0f;
-    _mealView.layer.masksToBounds = YES;
-    _mealView.backgroundColor = [UIColor clearColor];
+    if (_displayMealView) {
+        // Custom Meal view
+        _mealView = [[UIView alloc] initWithFrame:CGRectMake(10.0f, 100.0f, 170.0f, 30.0f)];
+        _mealView.layer.cornerRadius = 15.0f;
+        _mealView.layer.masksToBounds = YES;
+        _mealView.backgroundColor = [UIColor clearColor];
 
-    _mealChangeLabel = [[UILabel alloc] initWithFrame:CGRectMake(75.0f, 6.0f, 80.0f, 19.0f)];
-    _mealChangeLabel.text = [NSString stringWithFormat:@""];
-    _mealChangeLabel.textColor = [UIColor whiteColor];
-    _mealChangeLabel.textAlignment = NSTextAlignmentRight;
-    _mealChangeLabel.font = [UIFont systemFontOfSize:16.0f];
-    _mealChangeLabel.backgroundColor = [UIColor clearColor];
-    [_mealView addSubview:_mealChangeLabel];
+        _mealChangeLabel = [[UILabel alloc] initWithFrame:CGRectMake(75.0f, 6.0f, 80.0f, 19.0f)];
+        _mealChangeLabel.text = [NSString stringWithFormat:@""];
+        _mealChangeLabel.textColor = [UIColor whiteColor];
+        _mealChangeLabel.textAlignment = NSTextAlignmentRight;
+        _mealChangeLabel.font = [UIFont systemFontOfSize:16.0f];
+        _mealChangeLabel.backgroundColor = [UIColor clearColor];
+        [_mealView addSubview:_mealChangeLabel];
 
-    _waterDropletsImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"IDMPhotoBrowser.bundle/images/icMediumBg.png"]];
-    _waterDropletsImageView.frame = CGRectMake(5.0f, 5.0f, 20.0f, 20.0f);
-    [_mealView addSubview:_waterDropletsImageView];
+        _waterDropletsImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"IDMPhotoBrowser.bundle/images/icMediumBg.png"]];
+        _waterDropletsImageView.frame = CGRectMake(5.0f, 5.0f, 20.0f, 20.0f);
+        [_mealView addSubview:_waterDropletsImageView];
 
-    _mealChangeValueLabel = [[UILabel alloc] initWithFrame:CGRectMake(22.0f, 6.0f, 53.0f, 19.0f)];
-    _mealChangeValueLabel.text = [NSString stringWithFormat:@""];
-    _mealChangeValueLabel.textColor = [UIColor whiteColor];
-    _mealChangeValueLabel.textAlignment = NSTextAlignmentLeft;
-    _mealChangeValueLabel.font = [UIFont systemFontOfSize:16.0f];
-    _mealChangeValueLabel.backgroundColor = [UIColor clearColor];
-    [_mealView addSubview:_mealChangeValueLabel];
-
+        _mealChangeValueLabel = [[UILabel alloc] initWithFrame:CGRectMake(22.0f, 6.0f, 53.0f, 19.0f)];
+        _mealChangeValueLabel.text = [NSString stringWithFormat:@""];
+        _mealChangeValueLabel.textColor = [UIColor whiteColor];
+        _mealChangeValueLabel.textAlignment = NSTextAlignmentLeft;
+        _mealChangeValueLabel.font = [UIFont systemFontOfSize:16.0f];
+        _mealChangeValueLabel.backgroundColor = [UIColor clearColor];
+        [_mealView addSubview:_mealChangeValueLabel];
+        [self.view addSubview:_mealView];
+    }
 
     // Update
     //[self reloadData];
@@ -938,10 +940,6 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
 	if(! _disableVerticalSwipe)
 		[self.view addGestureRecognizer:_panGesture];
-
-    if (_displayMealView) {
-        [self.view addSubview:_mealView];
-    }
 }
 
 #pragma mark - Data
