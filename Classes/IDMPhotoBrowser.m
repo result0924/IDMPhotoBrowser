@@ -89,6 +89,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
     // UIView for meal
     UIView *_mealView;
+    UIImageView *_waterDropletsImageView;
     UILabel *_mealChangeLabel;
     UILabel *_mealChangeValueLabel;
 }
@@ -729,7 +730,11 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     _mealChangeLabel.backgroundColor = [UIColor clearColor];
     [_mealView addSubview:_mealChangeLabel];
 
-    _mealChangeValueLabel = [[UILabel alloc] initWithFrame:CGRectMake(15.0f, 6.0f, 60.0f, 19.0f)];
+    _waterDropletsImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"IDMPhotoBrowser.bundle/images/icMediumBg.png"]];
+    _waterDropletsImageView.frame = CGRectMake(5.0f, 5.0f, 20.0f, 20.0f);
+    [_mealView addSubview:_waterDropletsImageView];
+
+    _mealChangeValueLabel = [[UILabel alloc] initWithFrame:CGRectMake(22.0f, 6.0f, 53.0f, 19.0f)];
     _mealChangeValueLabel.text = [NSString stringWithFormat:@""];
     _mealChangeValueLabel.textColor = [UIColor whiteColor];
     _mealChangeValueLabel.textAlignment = NSTextAlignmentLeft;
@@ -1204,12 +1209,14 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
             NSString *sign = (val < 0) ? [formatter minusSign] : [formatter plusSign];
             NSString *changeNumber = [formatter stringFromNumber:@(fabs(val))]; // avoid double negative
             _mealChangeValueLabel.text = [NSString stringWithFormat:@"%@%@", sign , changeNumber];
-            _mealChangeValueLabel.hidden = (!meal.beforeMeal || !meal.afterMeal) ? YES : NO;
+            _mealChangeValueLabel.hidden = (!meal.beforeMeal || !meal.afterMeal);
             _mealView.backgroundColor = meal.statusColor;
+            _waterDropletsImageView.hidden = (!meal.beforeMeal || !meal.afterMeal);
         } else {
             _mealChangeLabel.text = @"";
             _mealChangeValueLabel.text = @"";
             _mealView.backgroundColor = [UIColor clearColor];
+            _waterDropletsImageView.hidden = YES;
         }
     }
 }
