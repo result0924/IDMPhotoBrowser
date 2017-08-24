@@ -1182,7 +1182,10 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
             CGFloat imageScale = fminf(CGRectGetWidth(self.view.bounds) / imageSize.width, CGRectGetHeight(self.view.bounds) / imageSize.height);
             CGSize scaledImageSize = CGSizeMake(imageSize.width * imageScale, imageSize.height * imageScale);
             CGRect imageFrame = CGRectMake(roundf(0.5f * (CGRectGetWidth(self.view.bounds) - scaledImageSize.width)), roundf(0.5f * (CGRectGetHeight(self.view.bounds) - scaledImageSize.height)), roundf(scaledImageSize.width), roundf(scaledImageSize.height));
-            _mealView.frame = CGRectMake(imageFrame.origin.x + 10, imageFrame.origin.y + 10, 170.0f, 30.0f);
+
+            CGFloat originY = (imageFrame.origin.y + 10 > 74) ? imageFrame.origin.y + 10 : 74.0f;
+            _mealView.frame = CGRectMake(imageFrame.origin.x + 10, originY, 170.0f, 30.0f);
+
         } else {
             _mealView.frame = CGRectMake(10.0f, 80.0f, 170.0f, 30.0f);
         }
