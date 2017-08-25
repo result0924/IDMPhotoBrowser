@@ -259,6 +259,8 @@
 			children = (
 				D157494E178DB94900B0211A /* IDMCaptionView.h */,
 				D157494F178DB94900B0211A /* IDMCaptionView.m */,
+				18B74F411F4FC5B4003486F4 /* IDMMealStatusView.h */,
+				18B74F421F4FC5B4003486F4 /* IDMMealStatusView.m */,
 				D11464B61802FFC4005B7BC3 /* IDMPBConstants.h */,
 				D1574950178DB94900B0211A /* IDMPhoto.h */,
 				D1574951178DB94900B0211A /* IDMPhoto.m */,
@@ -273,8 +275,6 @@
 				D157495B178DB94900B0211A /* IDMZoomingScrollView.m */,
 				727988B0187B3B5400966C66 /* IDMPBLocalizations.bundle */,
 				D1574952178DB94900B0211A /* IDMPhotoBrowser.bundle */,
-				18B74F411F4FC5B4003486F4 /* IDMMealStatusView.h */,
-				18B74F421F4FC5B4003486F4 /* IDMMealStatusView.m */,
 			);
 			name = Classes;
 			path = ../Classes;
