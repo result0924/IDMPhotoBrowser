@@ -1127,7 +1127,21 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 	IDMZoomingScrollView *thePage = nil;
 	for (IDMZoomingScrollView *page in _visiblePages) {
 		if (page.photo == photo) {
-			thePage = page; break;
+			thePage = page;
+
+            if (photo.meal) {
+                CGSize imageSize = [self imageForPhoto:photo].size;
+                CGFloat imageScale = fminf(CGRectGetWidth(self.view.frame) / imageSize.width, CGRectGetHeight(self.view.frame) / imageSize.height);
+                CGSize scaledImageSize = CGSizeMake(imageSize.width * imageScale, imageSize.height * imageScale);
+                CGRect imageFrame = CGRectMake(roundf(0.5f * (CGRectGetWidth(self.view.frame) - scaledImageSize.width)), roundf(0.5f * (CGRectGetHeight(self.view.frame) - scaledImageSize.height)), roundf(scaledImageSize.width), roundf(scaledImageSize.height));
+
+                CGFloat originY = (imageFrame.origin.y + 10 > 74) ? imageFrame.origin.y + 10 : 74.0f;
+                CGRect frame = page.mealStatusView.frame;
+                CGRect mealStatusFrame = CGRectMake(frame.origin.x, originY, frame.size.width, frame.size.height);
+                page.mealStatusView.frame = mealStatusFrame;
+            }
+
+            break;
 		}
 	}
 	return thePage;
