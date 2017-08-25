@@ -56,9 +56,6 @@
         _mealChangeValueLabel.font = [UIFont systemFontOfSize:16.0f];
         _mealChangeValueLabel.backgroundColor = [UIColor clearColor];
         [self addSubview:_mealChangeValueLabel];
-    } else {
-        _mealChangeLabel.frame = CGRectMake(15.0f, 6.0f, 75.0f, 19.0f);
-        _mealChangeLabel.textAlignment = NSTextAlignmentCenter;
     }
 
     if (_photo.meal && (_photo.meal.beforeMeal || _photo.meal.afterMeal)) {
@@ -78,9 +75,15 @@
         NSString *sign = (val < 0) ? [formatter minusSign] : [formatter plusSign];
         NSString *changeNumber = [formatter stringFromNumber:@(fabs(val))]; // avoid double negative
         _mealChangeValueLabel.text = [NSString stringWithFormat:@"%@%@", sign , changeNumber];
-        NSLog(@"text:%@", changeString);
         _mealChangeValueLabel.hidden = (!_photo.meal.beforeMeal || !_photo.meal.afterMeal);
         _waterDropletsImageView.hidden = (!_photo.meal.beforeMeal || !_photo.meal.afterMeal);
+
+        if (!_photo.meal.beforeMeal || !_photo.meal.afterMeal) {
+            NSAttributedString *attributedText = [[NSAttributedString alloc] initWithString:changeString
+                                                                                 attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:16.0f]}];
+            _mealChangeLabel.frame = CGRectMake(0.0f, 6.0f, attributedText.size.width + 30.0f, 19.0f);
+            _mealChangeLabel.textAlignment = NSTextAlignmentCenter;
+        }
     } else {
         _mealChangeLabel.text = @"";
         _mealChangeValueLabel.text = @"";

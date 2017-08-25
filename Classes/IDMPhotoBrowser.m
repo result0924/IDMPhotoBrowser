@@ -808,12 +808,18 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 	// Recalculate contentSize based on current orientation
 	_pagingScrollView.contentSize = [self contentSizeForPagingScrollView];
 
+    NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
+    formatter.numberStyle = NSNumberFormatterDecimalStyle;
+    [formatter setMaximumFractionDigits:1];
+    [formatter setRoundingMode:NSNumberFormatterRoundHalfUp];
+
 	// Adjust frames and configuration of each visible page
 	for (IDMZoomingScrollView *page in _visiblePages) {
         NSUInteger index = PAGE_INDEX(page);
 		page.frame = [self frameForPageAtIndex:index];
         page.captionView.frame = [self frameForCaptionView:page.captionView atIndex:index];
-        page.mealStatusView.frame = [self frameForMealStatusViewWithIndex:index];
+
+        page.mealStatusView.frame = [self frameForMealStatusViewWithIndex:index formatter:formatter];
 		[page setMaxMinZoomScalesForCurrentBounds];
 	}
 
@@ -1067,6 +1073,11 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     while (_recycledPages.count > 2) // Only keep 2 recycled pages
         [_recycledPages removeObject:[_recycledPages anyObject]];
 
+    NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
+    formatter.numberStyle = NSNumberFormatterDecimalStyle;
+    [formatter setMaximumFractionDigits:1];
+    [formatter setRoundingMode:NSNumberFormatterRoundHalfUp];
+
 	// Add missing pages
 	for (NSUInteger index = (NSUInteger)iFirstIndex; index <= (NSUInteger)iLastIndex; index++) {
 		if (![self isDisplayingPageForIndex:index]) {
@@ -1089,7 +1100,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
             // Add meal status
             IDMMealStatusView *mealStatusView = [self mealStatusViewForPhotoAtIndex:index];
-            mealStatusView.frame = [self frameForMealStatusViewWithIndex:index];
+            mealStatusView.frame = [self frameForMealStatusViewWithIndex:index formatter:formatter];
             [_pagingScrollView addSubview:mealStatusView];
             page.mealStatusView = mealStatusView;
 		}
@@ -1241,7 +1252,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     return captionFrame;
 }
 
-- (CGRect)frameForMealStatusViewWithIndex:(NSUInteger)index {
+- (CGRect)frameForMealStatusViewWithIndex:(NSUInteger)index formatter:(NSNumberFormatter *)formatter {
     CGRect pageFrame = [self frameForPageAtIndex:index];
     CGRect mealStatusFrame;
     IDMPhoto *photo = [self photoAtIndex:index];
@@ -1250,7 +1261,13 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     if (photo.meal && (photo.meal.beforeMeal && photo.meal.afterMeal)) {
         size = CGSizeMake(170.0f, 30.0f);
     } else {
-        size = CGSizeMake(105.0f, 30.0f);
+        NSString *beforeMealString = [NSString stringWithFormat:@"%@", (photo.meal.beforeMeal) ? [formatter stringFromNumber:photo.meal.beforeMeal] : @"?"];
+        NSString *afterMealString = [NSString stringWithFormat:@"%@", (photo.meal.afterMeal) ? [formatter stringFromNumber:photo.meal.afterMeal] : @"?"];
+        NSString *changeString = [NSString stringWithFormat:@"(%@→%@)", beforeMealString, afterMealString];
+        
+        NSAttributedString *attributedText = [[NSAttributedString alloc] initWithString:changeString
+                                                                             attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:16.0f]}];
+        size = CGSizeMake(attributedText.size.width + 30.0f, 30.0f);
     }
 
     if ([self imageForPhoto:photo]) {
