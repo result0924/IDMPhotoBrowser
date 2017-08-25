@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "IDMPhotoProtocol.h"
 
 @interface IDMMealStatusView : UIView
+
+- (instancetype)initWithIDMPhoto:(id<IDMPhoto>)photo;
 
 @end
