@@ -250,6 +250,13 @@ photo = _photo, captionView = _captionView, mealStatusView = _mealStatusView;
 	// Center
 	if (!CGRectEqualToRect(_photoImageView.frame, frameToCenter))
 		_photoImageView.frame = frameToCenter;
+
+    if ((_photoImageView.frame.size.width < self.bounds.size.width || _photoImageView.frame.size.width == self.bounds.size.width) &&
+        (_photoImageView.frame.size.height < self.bounds.size.height || _photoImageView.frame.size.height == self.bounds.size.height)) {
+        _mealStatusView.alpha = 1;
+    } else {
+        _mealStatusView.alpha = 0;
+    }
 }
 
 #pragma mark - UIScrollViewDelegate
