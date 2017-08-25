@@ -10,6 +10,8 @@
 #import "IDMPhotoProtocol.h"
 #import <SDWebImage/SDWebImageManager.h>
 
+@class MealObject;
+
 // This class models a photo/image and it's caption
 // If you want to handle photos, caching, decompression
 // yourself then you can simply ensure your custom data model
@@ -24,6 +26,7 @@ typedef void (^IDMProgressUpdateBlock)(CGFloat progress);
 @property (nonatomic, strong) NSURL *photoURL;
 @property (nonatomic, strong) IDMProgressUpdateBlock progressUpdateBlock;
 @property (nonatomic, strong) UIImage *placeholderImage;
+@property (nonatomic, strong) MealObject *meal;
 
 // Class
 + (IDMPhoto *)photoWithImage:(UIImage *)image;

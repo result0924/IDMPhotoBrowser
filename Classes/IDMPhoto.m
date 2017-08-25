@@ -8,6 +8,7 @@
 
 #import "IDMPhoto.h"
 #import "IDMPhotoBrowser.h"
+#import "IDMMealStatusView.h"
 
 // Private
 @interface IDMPhoto () {
@@ -20,6 +21,7 @@
     // Other
     NSString *_caption;
     BOOL _loadingInProgress;
+    MealObject *_meal;
 }
 
 // Properties
@@ -36,7 +38,8 @@
 // Properties
 @synthesize underlyingImage = _underlyingImage, 
 photoURL = _photoURL,
-caption = _caption;
+caption = _caption,
+meal = _meal;
 
 #pragma mark Class Methods
 
