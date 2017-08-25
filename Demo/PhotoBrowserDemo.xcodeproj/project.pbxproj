@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		18B74F431F4FC5B4003486F4 /* IDMMealStatusView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18B74F421F4FC5B4003486F4 /* IDMMealStatusView.m */; };
 		4C6F979214AF734900F8389A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C6F979114AF734900F8389A /* UIKit.framework */; };
 		4C6F979414AF734900F8389A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C6F979314AF734900F8389A /* Foundation.framework */; };
 		4C6F979614AF734900F8389A /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C6F979514AF734900F8389A /* CoreGraphics.framework */; };
@@ -56,6 +57,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		18B74F411F4FC5B4003486F4 /* IDMMealStatusView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IDMMealStatusView.h; sourceTree = "<group>"; };
+		18B74F421F4FC5B4003486F4 /* IDMMealStatusView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IDMMealStatusView.m; sourceTree = "<group>"; };
 		4C6F978D14AF734900F8389A /* PhotoBrowserDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PhotoBrowserDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4C6F979114AF734900F8389A /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		4C6F979314AF734900F8389A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -270,6 +273,8 @@
 				D157495B178DB94900B0211A /* IDMZoomingScrollView.m */,
 				727988B0187B3B5400966C66 /* IDMPBLocalizations.bundle */,
 				D1574952178DB94900B0211A /* IDMPhotoBrowser.bundle */,
+				18B74F411F4FC5B4003486F4 /* IDMMealStatusView.h */,
+				18B74F421F4FC5B4003486F4 /* IDMMealStatusView.m */,
 			);
 			name = Classes;
 			path = ../Classes;
@@ -405,7 +410,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		F88445D630091F1AA9A2F89A /* [CP] Copy Pods Resources */ = {
@@ -434,6 +439,7 @@
 				4C6F97A214AF734900F8389A /* AppDelegate.m in Sources */,
 				4C6F97B314AF737E00F8389A /* Menu.m in Sources */,
 				D1574968178DB94900B0211A /* IDMCaptionView.m in Sources */,
+				18B74F431F4FC5B4003486F4 /* IDMMealStatusView.m in Sources */,
 				D1574969178DB94900B0211A /* IDMPhoto.m in Sources */,
 				D157496B178DB94900B0211A /* IDMPhotoBrowser.m in Sources */,
 				D157496C178DB94900B0211A /* IDMTapDetectingImageView.m in Sources */,
@@ -531,6 +537,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				DEVELOPMENT_TEAM = "";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "PhotoBrowserDemo/PhotoBrowserDemo-Prefix.pch";
 				GCC_THUMB_SUPPORT = NO;
@@ -551,6 +558,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				DEVELOPMENT_TEAM = "";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "PhotoBrowserDemo/PhotoBrowserDemo-Prefix.pch";
 				GCC_THUMB_SUPPORT = NO;
