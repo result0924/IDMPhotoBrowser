@@ -13,7 +13,7 @@
 
 #import <DACircularProgress/DACircularProgressView.h>
 
-@class IDMPhotoBrowser, IDMPhoto, IDMCaptionView;
+@class IDMPhotoBrowser, IDMPhoto, IDMCaptionView, IDMMealStatusView;
 
 @interface IDMZoomingScrollView : UIScrollView <UIScrollViewDelegate, IDMTapDetectingImageViewDelegate, IDMTapDetectingViewDelegate> {
 	
@@ -26,10 +26,13 @@
 	IDMTapDetectingView *_tapView; // for background taps
     
     DACircularProgressView *_progressView;
+
+    IDMMealStatusView *_mealStatusView;
 }
 
 @property (nonatomic, strong) IDMTapDetectingImageView *photoImageView;
 @property (nonatomic, strong) IDMCaptionView *captionView;
+@property (nonatomic, strong) IDMMealStatusView *mealStatusView;
 @property (nonatomic, strong) id<IDMPhoto> photo;
 @property (nonatomic) CGFloat maximumDoubleTapZoomScale;
 

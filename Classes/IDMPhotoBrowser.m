@@ -9,6 +9,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "IDMPhotoBrowser.h"
 #import "IDMZoomingScrollView.h"
+#import "IDMMealStatusView.h"
 
 #import "pop/POP.h"
 
@@ -86,12 +87,6 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 	// iOS 7
     UIViewController *_applicationTopViewController;
     int _previousModalPresentationStyle;
-
-    // UIView for meal
-    UIView *_mealView;
-    UIImageView *_waterDropletsImageView;
-    UILabel *_mealChangeLabel;
-    UILabel *_mealChangeValueLabel;
 }
 
 // Private Properties
@@ -161,7 +156,6 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 @synthesize delegate = _delegate;
 @synthesize deleteButtonImage = _deleteButtonImage;
 @synthesize reportTitleAry = _reportTitleAry;
-@synthesize mealAry = _mealAry, displayMealView = _displayMealView;
 
 #pragma mark - NSObject
 
@@ -208,9 +202,6 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         _scaleImage = nil;
 
         _isdraggingPhoto = NO;
-
-        _mealAry = @[];
-        _displayMealView = NO;
 
         if ([self respondsToSelector:@selector(automaticallyAdjustsScrollViewInsets)])
             self.automaticallyAdjustsScrollViewInsets = NO;
@@ -716,35 +707,6 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     [_panGesture setMinimumNumberOfTouches:1];
     [_panGesture setMaximumNumberOfTouches:1];
 
-    if (_displayMealView) {
-        // Custom Meal view
-        _mealView = [[UIView alloc] initWithFrame:CGRectMake(10.0f, 100.0f, 170.0f, 30.0f)];
-        _mealView.layer.cornerRadius = 15.0f;
-        _mealView.layer.masksToBounds = YES;
-        _mealView.backgroundColor = [UIColor clearColor];
-
-        _mealChangeLabel = [[UILabel alloc] initWithFrame:CGRectMake(75.0f, 6.0f, 80.0f, 19.0f)];
-        _mealChangeLabel.text = [NSString stringWithFormat:@""];
-        _mealChangeLabel.textColor = [UIColor whiteColor];
-        _mealChangeLabel.textAlignment = NSTextAlignmentRight;
-        _mealChangeLabel.font = [UIFont systemFontOfSize:16.0f];
-        _mealChangeLabel.backgroundColor = [UIColor clearColor];
-        [_mealView addSubview:_mealChangeLabel];
-
-        _waterDropletsImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"IDMPhotoBrowser.bundle/images/icMediumBg.png"]];
-        _waterDropletsImageView.frame = CGRectMake(5.0f, 5.0f, 20.0f, 20.0f);
-        [_mealView addSubview:_waterDropletsImageView];
-
-        _mealChangeValueLabel = [[UILabel alloc] initWithFrame:CGRectMake(22.0f, 6.0f, 53.0f, 19.0f)];
-        _mealChangeValueLabel.text = [NSString stringWithFormat:@""];
-        _mealChangeValueLabel.textColor = [UIColor whiteColor];
-        _mealChangeValueLabel.textAlignment = NSTextAlignmentLeft;
-        _mealChangeValueLabel.font = [UIFont systemFontOfSize:16.0f];
-        _mealChangeValueLabel.backgroundColor = [UIColor clearColor];
-        [_mealView addSubview:_mealChangeValueLabel];
-        [self.view addSubview:_mealView];
-    }
-
     // Update
     //[self reloadData];
 
@@ -846,11 +808,18 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 	// Recalculate contentSize based on current orientation
 	_pagingScrollView.contentSize = [self contentSizeForPagingScrollView];
 
+    NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
+    formatter.numberStyle = NSNumberFormatterDecimalStyle;
+    [formatter setMaximumFractionDigits:1];
+    [formatter setRoundingMode:NSNumberFormatterRoundHalfUp];
+
 	// Adjust frames and configuration of each visible page
 	for (IDMZoomingScrollView *page in _visiblePages) {
         NSUInteger index = PAGE_INDEX(page);
 		page.frame = [self frameForPageAtIndex:index];
         page.captionView.frame = [self frameForCaptionView:page.captionView atIndex:index];
+
+        page.mealStatusView.frame = [self frameForMealStatusViewWithIndex:index formatter:formatter];
 		[page setMaxMinZoomScalesForCurrentBounds];
 	}
 
@@ -1000,6 +969,22 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     return captionView;
 }
 
+- (IDMMealStatusView *)mealStatusViewForPhotoAtIndex:(NSUInteger)index {
+    IDMMealStatusView *mealStatusView = nil;
+
+    id <IDMPhoto> photo = [self photoAtIndex:index];
+
+    if ([photo respondsToSelector:@selector(caption)]) {
+        if ([photo caption]) {
+            mealStatusView = [[IDMMealStatusView alloc] initWithIDMPhoto:photo];
+        }
+    }
+
+    mealStatusView.alpha = [self areControlsHidden] ? 0 : 1;
+
+    return mealStatusView;
+}
+
 - (UIImage *)imageForPhoto:(id<IDMPhoto>)photo {
 	if (photo) {
 		// Get image or obtain in background
@@ -1088,6 +1073,11 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     while (_recycledPages.count > 2) // Only keep 2 recycled pages
         [_recycledPages removeObject:[_recycledPages anyObject]];
 
+    NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
+    formatter.numberStyle = NSNumberFormatterDecimalStyle;
+    [formatter setMaximumFractionDigits:1];
+    [formatter setRoundingMode:NSNumberFormatterRoundHalfUp];
+
 	// Add missing pages
 	for (NSUInteger index = (NSUInteger)iFirstIndex; index <= (NSUInteger)iLastIndex; index++) {
 		if (![self isDisplayingPageForIndex:index]) {
@@ -1107,6 +1097,12 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
             captionView.frame = [self frameForCaptionView:captionView atIndex:index];
             [_pagingScrollView addSubview:captionView];
             page.captionView = captionView;
+
+            // Add meal status
+            IDMMealStatusView *mealStatusView = [self mealStatusViewForPhotoAtIndex:index];
+            mealStatusView.frame = [self frameForMealStatusViewWithIndex:index formatter:formatter];
+            [_pagingScrollView addSubview:mealStatusView];
+            page.mealStatusView = mealStatusView;
 		}
 	}
 }
@@ -1175,47 +1171,6 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
         [_reportButton setTitle:report.title ? : @"" forState:UIControlStateNormal];
         [_reportButton setTitleColor:report.titleColor ? : [UIColor whiteColor] forState:UIControlStateNormal];
-    }
-
-    if (_displayMealView) {
-        MealObject *meal = [_mealAry objectAtIndex:index];
-
-        if ([self imageForPhoto:currentPhoto]) {
-            CGSize imageSize = [self imageForPhoto:currentPhoto].size;
-            CGFloat imageScale = fminf(CGRectGetWidth(self.view.bounds) / imageSize.width, CGRectGetHeight(self.view.bounds) / imageSize.height);
-            CGSize scaledImageSize = CGSizeMake(imageSize.width * imageScale, imageSize.height * imageScale);
-            CGRect imageFrame = CGRectMake(roundf(0.5f * (CGRectGetWidth(self.view.bounds) - scaledImageSize.width)), roundf(0.5f * (CGRectGetHeight(self.view.bounds) - scaledImageSize.height)), roundf(scaledImageSize.width), roundf(scaledImageSize.height));
-
-            CGFloat originY = (imageFrame.origin.y + 10 > 74) ? imageFrame.origin.y + 10 : 74.0f;
-            _mealView.frame = CGRectMake(imageFrame.origin.x + 10, originY, 170.0f, 30.0f);
-
-        } else {
-            _mealView.frame = CGRectMake(10.0f, 80.0f, 170.0f, 30.0f);
-        }
-
-        if (meal.beforeMeal || meal.afterMeal) {
-            NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
-            formatter.numberStyle = NSNumberFormatterDecimalStyle;
-            [formatter setMaximumFractionDigits:1];
-            [formatter setRoundingMode:NSNumberFormatterRoundHalfUp];
-
-            NSString *beforeMealString = [NSString stringWithFormat:@"%@", (meal.beforeMeal) ? [formatter stringFromNumber:meal.beforeMeal] : @"?"];
-            NSString *afterMealString = [NSString stringWithFormat:@"%@", (meal.afterMeal) ? [formatter stringFromNumber:meal.afterMeal] : @"?"];
-            NSString *changeString = [NSString stringWithFormat:@"(%@→%@)", beforeMealString, afterMealString];
-            _mealChangeLabel.text = changeString;
-            double val = meal.afterMeal.floatValue - meal.beforeMeal.floatValue;
-            NSString *sign = (val < 0) ? [formatter minusSign] : [formatter plusSign];
-            NSString *changeNumber = [formatter stringFromNumber:@(fabs(val))]; // avoid double negative
-            _mealChangeValueLabel.text = [NSString stringWithFormat:@"%@%@", sign , changeNumber];
-            _mealChangeValueLabel.hidden = (!meal.beforeMeal || !meal.afterMeal);
-            _mealView.backgroundColor = meal.statusColor;
-            _waterDropletsImageView.hidden = (!meal.beforeMeal || !meal.afterMeal);
-        } else {
-            _mealChangeLabel.text = @"";
-            _mealChangeValueLabel.text = @"";
-            _mealView.backgroundColor = [UIColor clearColor];
-            _waterDropletsImageView.hidden = YES;
-        }
     }
 }
 
@@ -1295,6 +1250,39 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     CGRect captionFrame = CGRectMake(pageFrame.origin.x, 30, pageFrame.size.width, captionSize.height);
 
     return captionFrame;
+}
+
+- (CGRect)frameForMealStatusViewWithIndex:(NSUInteger)index formatter:(NSNumberFormatter *)formatter {
+    CGRect pageFrame = [self frameForPageAtIndex:index];
+    CGRect mealStatusFrame;
+    IDMPhoto *photo = [self photoAtIndex:index];
+    CGSize size;
+
+    if (photo.meal && (photo.meal.beforeMeal && photo.meal.afterMeal)) {
+        size = CGSizeMake(170.0f, 30.0f);
+    } else {
+        NSString *beforeMealString = [NSString stringWithFormat:@"%@", (photo.meal.beforeMeal) ? [formatter stringFromNumber:photo.meal.beforeMeal] : @"?"];
+        NSString *afterMealString = [NSString stringWithFormat:@"%@", (photo.meal.afterMeal) ? [formatter stringFromNumber:photo.meal.afterMeal] : @"?"];
+        NSString *changeString = [NSString stringWithFormat:@"(%@→%@)", beforeMealString, afterMealString];
+        
+        NSAttributedString *attributedText = [[NSAttributedString alloc] initWithString:changeString
+                                                                             attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:16.0f]}];
+        size = CGSizeMake(attributedText.size.width + 30.0f, 30.0f);
+    }
+
+    if ([self imageForPhoto:photo]) {
+        CGSize imageSize = [self imageForPhoto:photo].size;
+        CGFloat imageScale = fminf(CGRectGetWidth(self.view.frame) / imageSize.width, CGRectGetHeight(self.view.frame) / imageSize.height);
+        CGSize scaledImageSize = CGSizeMake(imageSize.width * imageScale, imageSize.height * imageScale);
+        CGRect imageFrame = CGRectMake(roundf(0.5f * (CGRectGetWidth(self.view.frame) - scaledImageSize.width)), roundf(0.5f * (CGRectGetHeight(self.view.frame) - scaledImageSize.height)), roundf(scaledImageSize.width), roundf(scaledImageSize.height));
+
+        CGFloat originY = (imageFrame.origin.y + 10 > 74) ? imageFrame.origin.y + 10 : 74.0f;
+        mealStatusFrame = CGRectMake(pageFrame.origin.x + 10.0f, originY, size.width, size.height);
+    } else {
+        mealStatusFrame = CGRectMake(pageFrame.origin.x + 10.0f, 74.0f, size.width, size.height);
+    }
+
+    return mealStatusFrame;
 }
 
 #pragma mark - UIScrollView Delegate
@@ -1379,8 +1367,14 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
     // Captions
     NSMutableSet *captionViews = [[NSMutableSet alloc] initWithCapacity:_visiblePages.count];
+    NSMutableSet *mealStatusViews = [[NSMutableSet alloc] initWithCapacity:_visiblePages.count];
+
     for (IDMZoomingScrollView *page in _visiblePages) {
         if (page.captionView) [captionViews addObject:page.captionView];
+
+        if (page.mealStatusView) {
+            [mealStatusViews addObject:page.mealStatusView];
+        }
     }
 
     // Hide/show bars
@@ -1391,6 +1385,10 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         [_doneButton setAlpha:alpha];
         [_reportButton setAlpha:alpha];
         for (UIView *v in captionViews) v.alpha = alpha;
+
+        for (UIView *v in mealStatusViews) {
+            v.alpha = alpha;
+        }
     } completion:^(BOOL finished) {}];
 
 	// Control hiding timer
@@ -1566,10 +1564,6 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 			completion();
 		}];
 	}
-}
-
-- (void)letMealViewHidden:(BOOL)isHidden {
-    _mealView.hidden = isHidden;
 }
 
 @end

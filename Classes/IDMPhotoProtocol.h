@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 #import "IDMPBConstants.h"
 
+@class MealObject;
+
 // Name of notification used when a photo has completed loading process
 // Used to notify browser display the image
 #define IDMPhoto_LOADING_DID_END_NOTIFICATION @"IDMPhoto_LOADING_DID_END_NOTIFICATION"
@@ -60,5 +62,7 @@
 // Return placeholder UIImage to be displayed while loading underlyingImage
 // Return nil if there is no placeholder
 - (UIImage *)placeholderImage;
+
+- (MealObject *)meal;
 
 @end

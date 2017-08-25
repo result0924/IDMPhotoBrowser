@@ -9,6 +9,7 @@
 #import "IDMZoomingScrollView.h"
 #import "IDMPhotoBrowser.h"
 #import "IDMPhoto.h"
+#import "IDMMealStatusView.h"
 
 // Declare private methods of browser
 @interface IDMPhotoBrowser ()
@@ -27,7 +28,8 @@
 
 @implementation IDMZoomingScrollView
 
-@synthesize photoImageView = _photoImageView, photoBrowser = _photoBrowser, photo = _photo, captionView = _captionView;
+@synthesize photoImageView = _photoImageView, photoBrowser = _photoBrowser,
+photo = _photo, captionView = _captionView, mealStatusView = _mealStatusView;
 
 - (id)initWithPhotoBrowser:(IDMPhotoBrowser *)browser {
     if ((self = [super init])) {
@@ -91,6 +93,8 @@
     self.photo = nil;
     [_captionView removeFromSuperview];
     self.captionView = nil;
+    [_mealStatusView removeFromSuperview];
+    self.mealStatusView = nil;
 }
 
 #pragma mark - Image
@@ -249,9 +253,9 @@
 
     if ((_photoImageView.frame.size.width < self.bounds.size.width || _photoImageView.frame.size.width == self.bounds.size.width) &&
         (_photoImageView.frame.size.height < self.bounds.size.height || _photoImageView.frame.size.height == self.bounds.size.height)) {
-        [self.photoBrowser letMealViewHidden:NO];
+        _mealStatusView.alpha = 1;
     } else {
-        [self.photoBrowser letMealViewHidden:YES];
+        _mealStatusView.alpha = 0;
     }
 }
 
