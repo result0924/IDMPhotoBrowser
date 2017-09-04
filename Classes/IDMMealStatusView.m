@@ -36,7 +36,7 @@
 }
 
 - (void)setupMealView {
-    _mealChangeLabel = [[UILabel alloc] initWithFrame:CGRectMake(75.0f, 6.0f, 80.0f, 19.0f)];
+    _mealChangeLabel = [[UILabel alloc] initWithFrame:CGRectMake(65.0f, 6.0f, 90.0f, 19.0f)];
     _mealChangeLabel.text = [NSString stringWithFormat:@""];
     _mealChangeLabel.textColor = [UIColor whiteColor];
     _mealChangeLabel.textAlignment = NSTextAlignmentRight;
@@ -49,7 +49,7 @@
         _waterDropletsImageView.frame = CGRectMake(5.0f, 5.0f, 20.0f, 20.0f);
         [self addSubview:_waterDropletsImageView];
 
-        _mealChangeValueLabel = [[UILabel alloc] initWithFrame:CGRectMake(22.0f, 6.0f, 53.0f, 19.0f)];
+        _mealChangeValueLabel = [[UILabel alloc] initWithFrame:CGRectMake(22.0f, 6.0f, 43.0f, 19.0f)];
         _mealChangeValueLabel.text = [NSString stringWithFormat:@""];
         _mealChangeValueLabel.textColor = [UIColor whiteColor];
         _mealChangeValueLabel.textAlignment = NSTextAlignmentLeft;
