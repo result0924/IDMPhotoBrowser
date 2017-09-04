@@ -121,8 +121,8 @@
     photo = [IDMPhoto photoWithFilePath:[[NSBundle mainBundle] pathForResource:@"photo4l" ofType:@"jpg"]];
     photo.caption = @"Campervan";
     meal = [MealObject new];
-    meal.beforeMeal = @(132);
-    meal.afterMeal = @(144);
+    meal.beforeMeal = @(13.5);
+    meal.afterMeal = @(26.8);
     meal.statusColor = [UIColor colorWithRed:111.0f / 255.0f green:197.0f / 255.0f blue:198.0f / 255.0f alpha:0.75f];
     photo.meal = meal;
     [photos addObject:photo];
