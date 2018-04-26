@@ -10,6 +10,7 @@
 #import "IDMPhotoBrowser.h"
 #import "IDMZoomingScrollView.h"
 #import "IDMMealStatusView.h"
+#import "IDMUtils.h"
 
 #import "pop/POP.h"
 
@@ -76,6 +77,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     BOOL _viewIsActive; // active as in it's in the view heirarchy
     BOOL _autoHide;
     NSInteger _initalPageIndex;
+    CGFloat _statusBarHeight;
 
     BOOL _isdraggingPhoto;
 
@@ -202,6 +204,8 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         _scaleImage = nil;
 
         _isdraggingPhoto = NO;
+        
+        _statusBarHeight = 20.f;
 
         if ([self respondsToSelector:@selector(automaticallyAdjustsScrollViewInsets)])
             self.automaticallyAdjustsScrollViewInsets = NO;
@@ -500,8 +504,19 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
     CGSize imageSize = image.size;
 
-    CGFloat maxWidth = CGRectGetWidth(_applicationWindow.bounds);
-    CGFloat maxHeight = CGRectGetHeight(_applicationWindow.bounds);
+    CGRect bounds = _applicationWindow.bounds;
+    // adjust bounds as the photo browser does
+    if (@available(iOS 11.0, *)) {
+        // use the windows safe area inset
+        UIWindow *window = [UIApplication sharedApplication].keyWindow;
+        UIEdgeInsets insets = UIEdgeInsetsMake(_statusBarHeight, 0, 0, 0);
+        if (window != NULL) {
+            insets = window.safeAreaInsets;
+        }
+        bounds = [self adjustForSafeArea:bounds adjustForStatusBar:NO forInsets:insets];
+    }
+    CGFloat maxWidth = CGRectGetWidth(bounds);
+    CGFloat maxHeight = CGRectGetHeight(bounds);
 
     CGRect animationFrame = CGRectZero;
 
@@ -636,7 +651,6 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         [_doneButton setContentHorizontalAlignment:UIControlContentHorizontalAlignmentRight];
     }
     else {
-        [_doneButton setImageEdgeInsets:UIEdgeInsetsMake(26.0f, 0.0f, 0.0f, 18.0f)];
         [_doneButton setImage:_doneButtonImage forState:UIControlStateNormal];
         _doneButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
     }
@@ -795,6 +809,8 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     // Done button
     _doneButton.frame = [self frameForDoneButtonAtOrientation:currentOrientation];
 
+    // Report button
+    _reportButton.frame = [self frameForReportButton];
 
     // Remember index
 	NSUInteger indexPriorToLayout = _currentPageIndex;
@@ -1194,6 +1210,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     CGRect frame = self.view.bounds;
     frame.origin.x -= PADDING;
     frame.size.width += (2 * PADDING);
+    frame = [self adjustForSafeArea:frame adjustForStatusBar:false];
     return frame;
 }
 
@@ -1234,36 +1251,68 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     if ([self isLandscape:orientation])
         height = 32;
 
-    return CGRectMake(0, self.view.bounds.size.height - height, self.view.bounds.size.width, height);
+    CGRect rtn = CGRectMake(0, self.view.bounds.size.height - height, self.view.bounds.size.width, height);
+    rtn = [self adjustForSafeArea:rtn adjustForStatusBar:true];
+    return rtn;
 }
 
 - (CGRect)frameForDoneButtonAtOrientation:(UIInterfaceOrientation)orientation {
     CGRect screenBound = self.view.bounds;
     CGFloat screenWidth = screenBound.size.width;
 
-    // if ([self isLandscape:orientation]) screenWidth = screenBound.size.height;
-
+     if ([self isLandscape:orientation]) screenWidth = screenBound.size.height;
+    
     if(_doneButtonImage) {
-        return CGRectMake(screenWidth - 50, 0, 50, 58);
+        if (@available (iOS 11, *)) {
+            return CGRectMake(screenWidth - 50, self.view.safeAreaInsets.top + 7, 32, 32);
+        } else {
+            return CGRectMake(screenWidth - 50, 27, 32, 32);
+        }
     } else {
-        return CGRectMake(screenWidth - 65, 30, 55, 24);
+        if (@available (iOS 11, *)) {
+            return CGRectMake(screenWidth - 65, self.view.safeAreaInsets.top + 7, 55, 24);
+        } else {
+            return CGRectMake(screenWidth - 65, 27, 55, 24);
+        }
     }
 }
 
 - (CGRect)frameForReportButton {
     CGFloat height = 44;
     CGFloat borderWidth = 0.5;
+    CGRect rect = CGRectMake(-borderWidth, self.view.bounds.size.height - height, self.view.bounds.size.width + borderWidth * 2, height + borderWidth);
+    
+    if (@available(iOS 11.0, *)) {
+        rect = CGRectMake(-borderWidth, self.view.bounds.size.height - self.view.safeAreaInsets.bottom - height, self.view.bounds.size.width + borderWidth * 2, height + borderWidth);
+    }
 
-    return CGRectMake(-borderWidth, self.view.bounds.size.height - height, self.view.bounds.size.width + borderWidth * 2, height + borderWidth);
+    return rect;
 }
 
 - (CGRect)frameForCaptionView:(IDMCaptionView *)captionView atIndex:(NSUInteger)index {
     CGRect pageFrame = [self frameForPageAtIndex:index];
 
     CGSize captionSize = [captionView sizeThatFits:CGSizeMake(pageFrame.size.width, 24)];
-    CGRect captionFrame = CGRectMake(pageFrame.origin.x, 30, pageFrame.size.width, captionSize.height);
-
+    CGRect captionFrame;
+    
+    if (@available (iOS 11, *)) {
+        captionFrame = CGRectMake(pageFrame.origin.x, self.view.safeAreaInsets.top + 10, pageFrame.size.width, captionSize.height);
+    } else {
+        captionFrame = CGRectMake(pageFrame.origin.x, 30, pageFrame.size.width, captionSize.height);
+    }
     return captionFrame;
+}
+
+- (CGRect)adjustForSafeArea:(CGRect)rect adjustForStatusBar:(BOOL)adjust {
+    if (@available(iOS 11.0, *)) {
+        return [self adjustForSafeArea:rect adjustForStatusBar:adjust forInsets:self.view.safeAreaInsets];
+    }
+    UIEdgeInsets insets = UIEdgeInsetsMake(_statusBarHeight, 0, 0, 0);
+    return [self adjustForSafeArea:rect adjustForStatusBar:adjust forInsets:insets];
+}
+
+- (CGRect)adjustForSafeArea:(CGRect)rect adjustForStatusBar:(BOOL)adjust forInsets:(UIEdgeInsets) insets {
+    return [IDMUtils adjustRect:rect forSafeAreaInsets:insets forBounds:self.view.bounds adjustForStatusBar:adjust statusBarHeight:_statusBarHeight];
 }
 
 - (CGRect)frameForMealStatusViewWithIndex:(NSUInteger)index formatter:(NSNumberFormatter *)formatter {

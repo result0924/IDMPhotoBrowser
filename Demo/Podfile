@@ -1,12 +1,17 @@
 source 'https://github.com/CocoaPods/Specs.git'
 
-# ignoring warning from pods
+platform :ios, '8.0'
+
+# ignore all warnings from all pods
 inhibit_all_warnings!
 
+def all_pods
+    pod 'SDWebImage', '~>3.7.1'
+    pod 'DACircularProgress'
+    pod 'pop'
+end
+
+
 target "PhotoBrowserDemo" do
-
-pod 'SDWebImage'
-pod 'DACircularProgress'
-pod 'pop'
-
+    all_pods
 end
