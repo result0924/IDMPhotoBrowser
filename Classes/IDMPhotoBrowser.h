@@ -57,7 +57,7 @@
 @property (nonatomic, strong) NSArray *actionButtonTitles;
 @property (nonatomic, weak) UIImage *leftArrowImage, *leftArrowSelectedImage;
 @property (nonatomic, weak) UIImage *rightArrowImage, *rightArrowSelectedImage;
-@property (nonatomic, weak) UIImage *deleteButtonImage;
+@property (nonatomic, strong) UIImage *deleteButtonImage;
 
 // Report button customization
 // Should set displayReportButton to YES & displayToolbar to NO to display report button
@@ -69,7 +69,7 @@
 // View customization
 @property (nonatomic) BOOL displayDoneButton;
 @property (nonatomic) BOOL useWhiteBackgroundColor;
-@property (nonatomic, weak) UIImage *doneButtonImage;
+@property (nonatomic, strong) UIImage *doneButtonImage;
 @property (nonatomic, weak) UIColor *trackTintColor, *progressTintColor;
 
 @property (nonatomic, weak) UIImage *scaleImage;
